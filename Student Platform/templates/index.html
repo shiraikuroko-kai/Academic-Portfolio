@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>学生科研组队平台 - 推荐系统</title>
+    <style>
+        /* --- 全局与布局 --- */
+        body { font-family: "Helvetica Neue", "Arial", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; margin: 0; background-color: #f8f9fa; color: #343a40; }
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 15px 50px; background-color: #ffffff; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .logo { font-size: 24px; font-weight: bold; color: #495057; padding: 10px 20px; background-color: #e9ecef; border-radius: 5px;}
+        .nav a { margin-left: 25px; text-decoration: none; color: #6c757d; font-weight: 500; font-size: 16px; transition: color 0.3s; }
+        .nav a.active, .nav a:hover { color: #007bff; }
+        .main-container { max-width: 1200px; margin: 40px auto; padding: 20px; }
+        h1, h2, h3 { color: #343a40; }
+        h1 { font-size: 28px; font-weight: 600; margin-bottom: 30px; border-left: 5px solid #007bff; padding-left: 15px;}
+        h2 { font-size: 22px; margin-top: 40px; }
+        
+        /* --- 表单控件 --- */
+        .form-section { background-color: #ffffff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 40px;}
+        select, button { padding: 12px 18px; font-size: 16px; border-radius: 5px; border: 1px solid #ced4da; }
+        button { background-color: #007bff; color: white; cursor: pointer; border-color: #007bff; font-weight: 500; transition: background-color 0.3s; }
+        button:hover { background-color: #0056b3; }
+        
+        /* --- 卡片式布局 --- */
+        .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 25px; }
+        .card { background-color: #ffffff; border: 1px solid #e9ecef; border-radius: 8px; padding: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: transform 0.3s, box-shadow 0.3s;}
+        .card:hover { transform: translateY(-5px); box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .card h3 { margin-top: 0; font-size: 18px; color: #007bff; }
+        .card p { margin: 8px 0; font-size: 14px; color: #6c757d; }
+        .card .skills { margin-top: 15px; }
+        .card .skill-tag { display: inline-block; background-color: #e9ecef; color: #495057; padding: 4px 10px; border-radius: 15px; font-size: 12px; margin-right: 5px; margin-bottom: 5px;}
+        .highlight-card { border-left: 4px solid #28a745; }
+    </style>
+</head>
+<body>
+
+    
+    <div class="header">
+        <div class="logo">学生科研组队平台</div>
+        <div class="nav">
+            <a href="#" class="active">参与项目</a>
+            <a href="#">队伍组建</a>
+            <a href="#">交流平台</a>
+            <a href="#">专业方向</a>
+            <a href="#">帮助</a>
+            <a href="#">会员申请</a>
+            <a href="#">登陆/注册</a>
+        </div>
+    </div>
+
+    <div class="main-container">
+        <h1>个性化推荐</h1>
+        <div class="form-section">
+            <form action="/" method="post">
+                <label for="student_id" style="font-weight: 500; margin-right: 10px;">选择一位学生查看推荐结果:</label>
+                <select name="student_id" id="student_id">
+                    <option value="">-- 请选择 --</option>
+                    {% for student in students %}
+                        <option value="{{ student.student_id }}" {% if student.student_id == selected_student_id %}selected{% endif %}>
+                            {{ student.student_id }} ({{ student.major }})
+                        </option>
+                    {% endfor %}
+                </select>
+                <button type="submit">生成推荐</button>
+            </form>
+        </div>
+
+        {% if selected_student_id %}
+        <div class="results">
+            <!-- 当前学生信息 -->
+            <h2>当前学生: {{ selected_student_id }}</h2>
+            <div class="card-grid">
+                <div class="card highlight-card">
+                    <h3>{{ student_info.student_id }}</h3>
+                    <p><strong>专业:</strong> {{ student_info.major }}</p>
+                    <div class="skills">
+                        <p><strong>技能:</strong></p>
+                        {% for skill in student_info.skills.split(',') %}
+                            <span class="skill-tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                     <div class="skills">
+                        <p><strong>兴趣:</strong></p>
+                        {% for interest in student_info.interests.split(',') %}
+                            <span class="skill-tag">{{ interest }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- 推荐项目 -->
+            <h2>为您推荐的项目</h2>
+            <div class="card-grid">
+                {% for project in recommended_projects %}
+                <div class="card">
+                    <h3>{{ project.project_name }}</h3>
+                    <p><strong>项目ID:</strong> {{ project.project_id }}</p>
+                    <p>{{ project.description }}</p>
+                    <div class="skills">
+                         <p><strong>所需技能:</strong></p>
+                        {% for skill in project.required_skills.split(',') %}
+                            <span class="skill-tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- 推荐队友 -->
+            <h2>为您推荐的队友</h2>
+            <div class="card-grid">
+                 {% for teammate in recommended_teammates %}
+                <div class="card">
+                    <h3>{{ teammate.student_id }}</h3>
+                    <p><strong>专业:</strong> {{ teammate.major }}</p>
+                    <div class="skills">
+                        <p><strong>技能:</strong></p>
+                        {% for skill in teammate.skills.split(',') %}
+                            <span class="skill-tag">{{ skill }}</span>
+                        {% endfor %}
+                    </div>
+                     <div class="skills">
+                        <p><strong>兴趣:</strong></p>
+                        {% for interest in teammate.interests.split(',') %}
+                            <span class="skill-tag">{{ interest }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
