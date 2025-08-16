@@ -54,3 +54,60 @@
 
 ---
 首先感谢杨静老师和姜赢老师的陪伴与支持，虽然未能顺利结项，但这个项目对我来说，仍然是一次宝贵的学习和成长经历。
+
+# Student Research Collaboration Platform
+
+This was a university-level innovation project that I initiated and led in 2021. The original idea came from a very common pain point I experienced myself when participating in research competitions: it was hard to find good teammates when you had a project idea, and hard to find a suitable project when you were looking for a team. At the time, I wanted to design a platform to solve this problem. Initially, we were aiming for this to be a national-level project, but due to insufficient preliminary research, there was a huge gap in the viability of our data package compared to what was required. As a result, after review, it was approved as a university-level project.
+
+To be honest, for various reasons, the project was never fully realized according to its initial grand vision. But after graduation, I took a dedicated period of time to revisit the original ideas and decided to build an MVP (Minimum Viable Product). The goal was to bring the core concept—an intelligent matching engine based on content recommendation—to life.
+
+This repository is the final result of that refactoring and reflection process.
+
+## 1. Core Features of the Project
+
+The core of this MVP is not a fancy interface, but a recommendation algorithm that solves a real problem. It mainly implements two functions:
+
+1.  Project Recommendation: Input a student's ID, and the system will recommend the top 5 most suitable projects from the project pool based on their skills and interests profile.
+2.  Teammate Recommendation: Input a student's ID, and the system will recommend the top 5 best-suited potential teammates from the student pool.
+
+## 2. My Technical Approach
+
+#### The Data Layer
+
+`students.csv`: Each student has a randomly assigned major, skill tags (e.g., `Python`, `Data Analysis`, `UI Design`), and interest tags.
+`projects.csv`: Each project has a randomly generated name, a description, and, most importantly, a set of required skill tags.
+
+#### The Algorithm
+I needed a way to quantify the match between a "student" and a "project," as well as between "student" and "student." I eventually chose a classic combination in the field of text recommendation: TF-IDF + Cosine Similarity, and the results were quite satisfying.
+
+1. I treated each student's "skills + interests" tags and each project's "required skills" tags as separate "documents." Then, I used `scikit-learn`'s `TfidfVectorizer` to transform these text tags into mathematical TF-IDF vectors that could be computed.
+2. Once I had the vectors, I could use Cosine Similarity to calculate the "angle" between any two vectors. The smaller the angle, the higher the similarity.
+    The similarity between Student A and Project B determines whether Project B is worth recommending to Student A.
+    The similarity between Student A and Student B determines if they would be good teammates.
+
+#### The Presentation Layer
+To visualize the recommendation results intuitively, I built an extremely simple web application using the Flask framework (`app.py` and `templates/index.html`). It has a single page where you can select a student ID from a dropdown menu. The backend will then call my recommendation engine and display the results in a card-based format on the page.
+
+## 3. Key Learnings & Reflections
+
+For me, the biggest takeaway from this project wasn't the final code, but the shift in my way of thinking.
+
+The distance from "idea" to "product": I gained a deep appreciation for the huge gap between a "wild idea" and a feasible product prototype with clear boundaries. In the original proposal, we envisioned all sorts of complex features like a community forum, chat functions, and a points system. But in this refactoring, I focused on just one thing: making the core recommendation feature work. This focus on the MVP was my biggest area of growth.
+Balancing management and technology: As the project leader, I realized my role wasn't just about "writing code." In the early stages, I made a classic mistake: rushing to choose the technology before the requirements were fully understood. This refactoring process was also a chance for me to review and optimize my entire project workflow.
+The importance of the "grunt work": Generating mock data, preprocessing text, building the TF-IDF vocabulary... although these tasks aren't as "sexy" as the algorithm itself, I found that they took up about 80% of the project's time and directly determined the quality of the final recommendations.
+
+## 4. Technical Stack
+
+Language: Python 3
+Core Libraries: Pandas, scikit-learn, Faker, Flask
+
+## 5. How to Run
+
+1.  Clone this repository.
+2.  Make sure you have all the necessary libraries installed (`pip install pandas Faker scikit-learn Flask`).
+3.  First, run the data generation script: `python data_generator.py`.
+4.  Then, start the web application: `python app.py`.
+5.  Open `http://1227.0.0.1:5000/` in your browser to see the results.
+
+---
+First and foremost, I want to thank Professor Yang Jing and Professor Jiang Ying for their guidance and support. Although the project was not successfully concluded in its original form, it remains an invaluable learning and growth experience for me.

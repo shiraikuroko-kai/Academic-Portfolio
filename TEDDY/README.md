@@ -45,3 +45,58 @@
 3.  将原始数据文件 (`景区评论.xlsx`, `酒店评论.xlsx`) 放入`/data`文件夹。
 4.  将`hit_stopwords.txt`文件放入`/stopwords`文件夹。
 5.  按顺序运行`Problem_1_...ipynb`, `Problem_2_...ipynb`等文件即可。所有结果文件都会保存在`/output`文件夹中。```
+
+# English version
+
+This is my post-competition review of my project for the 9th "Tadib Cup" Data Mining Challenge (Problem C: Analysis of Tourist Destination Impressions) from 2020. This was one of my earliest independent data analysis projects.
+
+## 1. Project Goal
+
+The organizers provided us with two text datasets, which were real online reviews for tourist attractions and hotels, and asked us to use data mining methods to analyze tourists' impressions of these places. Specifically, we needed to complete four tasks:
+1.  Extract "impression" keywords for each destination.
+2.  Build a model to give each destination a comprehensive score.
+3.  Analyze which online reviews were "effective" and which were "spam" or low-quality.
+4.  Identify the unique "features" of destinations at high, medium, and low rating levels.
+
+## 2. My Workflow & Methodology
+
+At the beginning, I did the entire analysis in a Jupyter Notebook, trying to comment on the code and my thought process as much as possible. But later on, I found Geany more convenient to use, so I switched tools.
+
+#### Problem 1: Word Cloud / Impression Analysis
+Initially, my most direct idea was to simply use `jieba` for word segmentation and then count the frequencies. But I quickly discovered a problem: the top-ranked words were all uninformative ones like "not bad," "convenient," and "okay."
+That's when I realized I probably needed an algorithm that could reflect "importance" rather than just "frequency." Therefore, I ended up using the TF-IDF algorithm. To make the results more accurate, it was essential to manually tune and organize a stopword list to filter out those generic but meaningless words.
+
+#### Problem 2: Comprehensive Evaluation of Attractions & Hotels
+This problem required us to score five dimensions, including service, location, and facilities. Simply averaging the expert scores seemed too crude. I wanted to know, are these five dimensions equally important to tourists?
+To find a more objective weighting, I researched and used the Entropy Weight Method. This method can assign weights to each dimension based on the volatility of the data itself. For example, if all hotels have similar "cleanliness" scores, that metric doesn't differentiate them much, so its weight would be low. I felt this approach was more scientific than subjectively setting the weights.
+
+#### Problem 3: Text Effectiveness Analysis
+"Effectiveness" is a very vague concept. I defined it as a "review quality score" composed of three core metrics:
+1.  Text Length: The longer the review, the more information it likely contains.
+2.  Sentiment Strength: I used the `snownlp` library to calculate the sentiment score for each review. I believe that the stronger the emotion—whether extremely positive or extremely negative—the more authentic the review usually is.
+3.  Information Density: I used `jieba`'s part-of-speech tagging function to calculate the proportion of nouns and verbs in each review. I think that reviews with more "content words" are more specific and of higher quality.
+Finally, I normalized and weighted these three metrics to get a final "effectiveness score."
+
+#### Problem 4: Feature Analysis
+This step was really an integration of the previous results. I used the rankings from Problem 2 to select destinations from high, medium, and low tiers. Then, I used the TF-IDF algorithm again, but this time the corpus included all destinations. This way, the calculated TF-IDF scores could better reflect a word's "uniqueness" in the reviews for a specific destination.
+
+## 3. Key Learnings & Challenges
+
+To be honest, this project was a bumpy ride, but it also taught me a lot of things you can't learn from a textbook.
+
+First, data cleaning took the most time. I spent a long time debugging a `KeyError` at the beginning, only to finally realize that the column names for the review content in the two Excel files—for attractions and hotels—were actually different! (One was `评论详情`, the other was `评论内容`). This taught me that data cleaning and preprocessing are the first and most important steps in any analysis.
+
+Path issues were also a big deal. In my earliest code, the file paths were all hard-coded (like `C:\\Users\\...`). I later realized that such code wouldn't run anywhere except on my own computer. I refactored all the paths to be relative (like `./data/`), which made my project "portable." On top of that, using the `.apply()` function to calculate sentiment scores and do part-of-speech tagging for tens of thousands of reviews was really slow. The program would often "freeze" for a long time, and I initially thought I had a bug in my code. Later, I learned to use the `tqdm` library to add a progress bar to this long process. It didn't make it faster, but at least it let me know what was going on.
+
+## 4. Technical Stack
+
+Language: Python
+Core Libraries: Pandas, Jieba, SnowNLP, NumPy
+
+## 5. How to Run
+
+1.  Clone this repository.
+2.  Make sure you have all the necessary libraries installed (`pip install pandas openpyxl jieba snownlp tqdm`).
+3.  Place the original data files (`景区评论.xlsx`, `酒店评论.xlsx`) into the `/data` folder.
+4.  Place the `hit_stopwords.txt` file into the `/stopwords` folder.
+5.  Run the files like `Problem_1_...ipynb`, `Problem_2_...ipynb` in order. All result files will be saved in the `/output` folder.
