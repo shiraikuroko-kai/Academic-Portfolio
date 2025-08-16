@@ -1,4 +1,3 @@
-
 # 问题一：景区及酒店印象分析
 # ---------------------------------------------------------------------------
 import pandas as pd
@@ -102,7 +101,7 @@ try:
     print(df_hotel_results.head())
 
 except FileNotFoundError:
-    print("错误：未在 'data' 文件夹中找到 '酒店评论.xlsx'。请检查文件是否存在。")
+    print("请检查数据文件")
     df_hotel_results = pd.DataFrame() # 创建一个空的DataFrame以避免后续错误
 
 
@@ -117,7 +116,7 @@ try:
         if not df_hotel_results.empty:
             df_hotel_results.to_excel(writer, sheet_name='酒店印象词', index=False)
     
-    print(f"\n处理完成！结果已成功保存至: {output_filename}")
+    print(f"\n结果已成功保存至: {output_filename}")
 
 except Exception as e:
     print(f"\n保存文件时出错: {e}")

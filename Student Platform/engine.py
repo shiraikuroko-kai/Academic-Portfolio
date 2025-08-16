@@ -4,14 +4,14 @@ import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# 加载我们之前生成的数据
+# 加载数据
 try:
     df_students = pd.read_csv('./data/students.csv')
     df_projects = pd.read_csv('./data/projects.csv')
-    print("数据加载成功！")
+    print("数据加载")
     print(f"共加载 {len(df_students)} 名学生, {len(df_projects)} 个项目。")
 except FileNotFoundError:
-    print("错误：未在'./data/'文件夹下找到students.csv或projects.csv。请先运行data_generator.py。")
+    print("请检查数据文件")
 
 # 展示数据样本
 print("\n学生数据样本:")
@@ -23,8 +23,8 @@ print(df_projects.head())
 # --- 数据预处理与特征工程 ---
 
 # TF-IDF算法要求输入的文本是以空格分隔的字符串。
-# 我们的标签数据已经是逗号分隔的，需要将其转换一下。
-# 同时，我们将学生的'skills'和'interests'合并，创建一个'profile'字段，代表学生的完整画像。
+# 然而标签数据已经是逗号分隔的，因此需要将其转换一下。
+# 同时学生的'skills'和'interests'两个属性需要合并并创建一个'profile'字段，代表学生的完整画像。
 
 # 填充可能存在的空值（NaN）
 df_students['skills'] = df_students['skills'].fillna('')
@@ -38,7 +38,7 @@ df_students['profile_text'] = df_students['profile_text'].str.replace(',', ' ')
 # 替换项目所需技能的逗号为空格
 df_projects['required_skills_text'] = df_projects['required_skills'].str.replace(',', ' ')
 
-print("数据预处理完成。学生'profile_text'和项目'required_skills_text'已创建。")
+print("数据预处理完成")
 print("\n处理后的学生数据样本:")
 print(df_students[['student_id', 'profile_text']].head())
 
@@ -75,7 +75,7 @@ print("\n学生-学生 相似度矩阵计算完成。")
 print("矩阵形状:", student_student_similarity.shape)
 
 
-# --- 封装推荐函数 ---
+# --- 封装---
 
 def recommend_projects(student_id, top_n=5):
     """根据学生ID，推荐Top N个最匹配的项目"""

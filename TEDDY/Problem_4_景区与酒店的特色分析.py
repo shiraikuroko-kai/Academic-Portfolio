@@ -76,17 +76,17 @@ try:
     # 加载原始评论数据
     df_spots_reviews = pd.read_excel('./data/景区评论.xlsx')
 
-    # 1. 筛选高、中、低三个层次的景区
+    # 筛选高、中、低三个层次的景区
     spot_tiers = select_tiers(df_spots_ranked, '景区名称', '综合排名')
     print("已选定高、中、低分层的景区:")
     print(spot_tiers)
     
     all_selected_spots = spot_tiers['高分层'] + spot_tiers['中分层'] + spot_tiers['低分层']
 
-    # 2. 挖掘特色
+    # 挖掘特色
     spot_features = analyze_uniqueness(df_spots_reviews, all_selected_spots, '景区名称', '评论内容')
     
-    # 3. 整理结果
+    # 整理结果
     spot_feature_list = []
     for tier, ids in spot_tiers.items():
         for item_id in ids:
@@ -99,7 +99,7 @@ try:
     df_spot_feature_results = pd.DataFrame(spot_feature_list)
 
 except FileNotFoundError:
-    print("错误：请先确保 'data' 文件夹中有'景区评论.xlsx'和'景区评分.xlsx'，且 'output' 文件夹中有'综合评价表.xlsx'")
+    print("请检查数据文件")
     df_spot_feature_results = pd.DataFrame()
 
 # --- 酒店特色分析 ---
@@ -110,17 +110,17 @@ try:
     # 加载原始评论数据
     df_hotels_reviews = pd.read_excel('./data/酒店评论.xlsx')
 
-    # 1. 筛选高、中、低三个层次的酒店
+    # 筛选高、中、低三个层次的酒店
     hotel_tiers = select_tiers(df_hotels_ranked, '酒店名称', '综合排名')
     print("已选定高、中、低分层的酒店:")
     print(hotel_tiers)
     
     all_selected_hotels = hotel_tiers['高分层'] + hotel_tiers['中分层'] + hotel_tiers['低分层']
 
-    # 2. 挖掘特色
+    # 挖掘特色
     hotel_features = analyze_uniqueness(df_hotels_reviews, all_selected_hotels, '酒店名称', '评论内容')
 
-    # 3. 整理结果
+    # 整理结果
     hotel_feature_list = []
     for tier, ids in hotel_tiers.items():
         for item_id in ids:
@@ -152,7 +152,7 @@ try:
             print(df_hotel_feature_results)
             df_hotel_feature_results.to_excel(writer, sheet_name='酒店特色分析', index=False)
             
-    print(f"\n处理完成！特色分析结果已成功保存至: {output_filename_4}")
+    print(f"\n结果已成功保存至: {output_filename_4}")
 
 except Exception as e:
     print(f"\n保存文件时出错: {e}")

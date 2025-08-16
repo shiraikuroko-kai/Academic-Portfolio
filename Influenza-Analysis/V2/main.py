@@ -1,4 +1,4 @@
-# main.py (Version 4.0 with Final Polished UI/UX)
+# main.py
 import pygame
 import pygame_widgets
 from pygame_widgets.slider import Slider
@@ -7,7 +7,7 @@ import random
 import parameters as params
 from person import Person
 
-# --- 1. 初始化 ---
+# --- 初始化 ---
 pygame.init()
 
 SIMULATION_HEIGHT = params.SCREEN_HEIGHT - 200
@@ -20,7 +20,7 @@ font_stats = pygame.font.SysFont('SimHei', 24)
 font_slider = pygame.font.SysFont('SimHei', 18)
 font_slider_value = pygame.font.SysFont('Arial', 20, bold=True) # 用于显示数值的字体
 
-# --- 2. 创建一个更专业的GUI控件布局 ---
+# --- 创建一个GUI控件布局 ---
 panel_rect = pygame.Rect(0, CONTROL_PANEL_Y, params.SCREEN_WIDTH, 200)
 
 slider_width = 200
@@ -39,7 +39,7 @@ button_reset = Button(screen, params.SCREEN_WIDTH - 200, CONTROL_PANEL_Y + 120, 
 
 population = []
 
-# --- 3. 核心函数 ---
+# --- 核心函数 ---
 def reset_simulation():
     global population
     population = []
@@ -55,7 +55,7 @@ def reset_simulation():
                 random.choice(population).get_infected()
     print("模拟已重置。")
 
-# --- 4. 辅助函数 (保持不变) ---
+# --- 辅助函数---
 def draw_text(text, font, color, surface, x, y):
     textobj = font.render(text, 1, color)
     textrect = textobj.get_rect()
@@ -65,7 +65,7 @@ def draw_text(text, font, color, surface, x, y):
 # 初始启动
 reset_simulation()
 
-# --- 5. 主模拟循环 ---
+# --- 主模拟循环 ---
 running = True
 while running:
     events = pygame.event.get()
@@ -73,7 +73,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    # --- 更新逻辑 (保持不变) ---
+    # --- 更新逻辑---
     current_velocity = slider_velocity.getValue()
     current_infection_rate = slider_infection_rate.getValue()
     recovery_time_frames = slider_recovery_time.getValue() * params.FPS
@@ -122,7 +122,7 @@ while running:
     draw_text(f"{slider_infection_rate.getValue():.2f}", font_slider_value, (0, 0, 0), screen, slider_start_x + slider_gap*2 + slider_width + 15, slider_y - 5)
     draw_text(f"{slider_recovery_time.getValue()}s", font_slider_value, (0, 0, 0), screen, slider_start_x + slider_gap*3 + slider_width + 15, slider_y - 5)
     
-    # 实时统计 (保持不变)
+    # 实时统计
     healthy_count = sum(1 for p in population if p.status == 'HEALTHY')
     infected_count = sum(1 for p in population if p.status == 'INFECTED')
     recovered_count = len(population) - healthy_count - infected_count

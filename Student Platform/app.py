@@ -1,34 +1,27 @@
 # app.py
-#
-# 这是我们项目的Web应用后端。
-# 它使用Flask框架，加载推荐引擎，并为用户提供一个简单的交互界面。
+# Web应用后端
+# 使用Flask框架
 
 from flask import Flask, render_template, request
 import pandas as pd
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# --- 1. 初始化Flask应用 ---
+# --- Flask---
 app = Flask(__name__)
-print("Flask 应用已初始化。")
 
-# --- 2. 加载数据与构建推荐引擎 (我们将推荐引擎的核心逻辑直接整合到这里) ---
 
 # 定义一个全局变量来存储预计算好的数据和模型
 recommendation_data = {}
 
 def build_recommendation_engine():
-    """
-    加载数据，预处理，并计算相似度矩阵。
-    这个函数只在Web应用启动时运行一次。
-    """
     print("开始构建推荐引擎...")
     try:
         df_students = pd.read_csv('./data/students.csv')
         df_projects = pd.read_csv('./data/projects.csv')
         print(f"成功加载 {len(df_students)} 名学生, {len(df_projects)} 个项目。")
     except FileNotFoundError:
-        print("错误：数据文件未找到。请先运行data_generator.py。")
+        print("数据文件被偷走里")
         return None
 
     # 数据预处理
@@ -60,13 +53,10 @@ def build_recommendation_engine():
     
     print("推荐引擎构建完成！")
 
-# --- 3. 定义Web路由与视图函数 ---
+# --- 定义Web路由与视图函数 ---
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    """
-    处理主页的请求，包括GET（初次加载）和POST（用户提交表单）。
-    """
     df_students = recommendation_data.get('df_students')
     
     # --- 修改之处：传递完整的学生信息列表，而不仅仅是ID ---
@@ -96,7 +86,7 @@ def index():
     # 首次加载页面
     return render_template('index.html', students=all_students)
 
-# --- 4. 启动Web应用 ---
+# --- 启动 ---
 if __name__ == '__main__':
     build_recommendation_engine() # 在启动前，先构建好推荐引擎
     app.run(debug=True) # debug=True模式，方便我们调试

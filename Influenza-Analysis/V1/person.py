@@ -1,22 +1,11 @@
 # person.py
-#
-# 这个文件定义了我们模拟世界中的核心对象：Person类。
-# 每一个Person对象，都是一个独立的、拥有自己状态和行为的“智能体”。
-
 import pygame
 import random
 import parameters as params
 
 class Person:
     def __init__(self, x, y, status='HEALTHY'):
-        """
-        初始化一个Person对象。
-        
-        参数:
-        x (int): 初始x坐标。
-        y (int): 初始y坐标。
-        status (str): 初始健康状态 ('HEALTHY', 'INFECTED', 'RECOVERED')。
-        """
+
         self.x = x
         self.y = y
         
@@ -28,7 +17,7 @@ class Person:
         self.infection_timer = 0 # 感染计时器
 
     def move(self):
-        """更新这个人的位置，并处理边界碰撞。"""
+        """更新位置，并处理边界碰撞。"""
         self.x += self.vx
         self.y += self.vy
         

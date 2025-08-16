@@ -15,12 +15,9 @@ plt.rcParams['font.sans-serif'] = ['SimHei']
 plt.rcParams['axes.unicode_minus'] = False
 tqdm.pandas()
 
-print(">>> 库导入完成。\n")
-
-# ===========================================================================
 
 # --- 数据加载与预处理 ---
-print(">>> 步骤 2: 加载并预处理数据...")
+print("加载并预处理数据...")
 
 try:
     # 假设您的真实数据保存在这两个文件中
@@ -43,7 +40,7 @@ try:
     print(df.sample(5))
 
 except FileNotFoundError:
-    print("!!! 错误：请确保在'/data/'文件夹下，存在'黄鹤楼_reviews.csv'和'龟峰_reviews.csv'这两个数据文件。")
+    print("并非存在数据文件，并非吗？")
     df = pd.DataFrame() # 创建空DataFrame以避免后续报错
 
 print("\n")
@@ -52,7 +49,7 @@ print("\n")
 
 # --- 情感演化分析 ---
 if not df.empty:
-    print(">>> 步骤 3: 开始进行情感演化分析 (此过程可能需要几分钟)...")
+    print("情感演化分析开始，等就行了")
 
     # 计算情感分数，并使用tqdm显示进度条
     df['sentiment'] = df['content'].progress_apply(lambda x: SnowNLP(x).sentiments)
@@ -73,7 +70,7 @@ if not df.empty:
     print("--> 情感演化图已生成，请在下方查看。")
     plt.show()
 else:
-    print(">>> 步骤 3: 跳过情感演化分析（因为数据加载失败）。")
+    print("跳过情感演化分析（因为数据加载失败）")
     
 print("\n")
     
@@ -81,7 +78,7 @@ print("\n")
 
 # --- 主题建模与对比---
 if not df.empty:
-    print(">>> 步骤 4: 开始进行LDA主题建模...")
+    print("开始进行LDA主题建模")
 
     # 加载停用词
     try:
@@ -111,15 +108,15 @@ if not df.empty:
         return ldamodel
 
     # --- 黄鹤楼主题分析 ---
-    print("\n--- 正在分析【黄鹤楼】的核心主题 ---")
+    print("正在分析【黄鹤楼】的核心主题")
     hhl_corpus = df[df['景点名称'] == '黄鹤楼']['content'].progress_apply(preprocess_for_lda).tolist()
     train_and_print_topics(hhl_corpus)
 
     # --- 龟峰主题分析 ---
-    print("\n--- 正在分析【龟峰】的核心主题 ---")
+    print("\n正在分析【龟峰】的核心主题 ---")
     gf_corpus = df[df['景点名称'] == '龟峰']['content'].progress_apply(preprocess_for_lda).tolist()
     train_and_print_topics(gf_corpus)
 else:
-    print(">>> 步骤 4: 跳过主题建模分析（因为数据加载失败）。")
-print("\n>>> 所有分析已执行完毕。")
+    print("跳过主题建模分析（因为数据加载失败）")
+print("\n 所有分析已执行完了，并非失败。")
 # ===========================================================================

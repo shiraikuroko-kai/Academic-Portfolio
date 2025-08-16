@@ -1,11 +1,11 @@
-# 问题三：网评文本的有效性分析 (版本：优化用户体验)
+# 问题三：网评文本的有效性分析
 # ---------------------------------------------------------------------------
 import pandas as pd
 import numpy as np
 from snownlp import SnowNLP
 import jieba.posseg as pseg # 用于词性标注
 import os
-from tqdm import tqdm # 导入tqdm库
+from tqdm import tqdm # 进度条库
 
 # 初始化tqdm，使其能与pandas的apply方法配合使用
 tqdm.pandas()
@@ -19,7 +19,7 @@ if not os.path.exists('output'):
 # 定义核心分析函数
 def analyze_review_effectiveness(df, text_column):
     
-    # 指标1: 文本长度 (此计算非常快，无需进度条)
+    # 指标1: 文本长度
     df['文本长度'] = df[text_column].astype(str).apply(len)
     print("指标1：文本长度 -> 计算完成。")
 
@@ -36,7 +36,7 @@ def analyze_review_effectiveness(df, text_column):
     df['情感强度'] = df[text_column].astype(str).progress_apply(get_sentiment_strength)
     print("指标2：情感强度 -> 计算完成。")
 
-    # --- 信息密度计算 (加入tqdm进度条) ---
+    # --- 信息密度计算 (加入进度条) ---
     def get_information_density(text):
         words = pseg.cut(text)
         nv_count = 0 # 名词和动词的数量
@@ -48,7 +48,6 @@ def analyze_review_effectiveness(df, text_column):
         return nv_count / total_words if total_words > 0 else 0
 
     print("指标3：信息密度 -> 开始计算 (这可能需要几分钟)...")
-    # 再次使用 .progress_apply()
     df['信息密度'] = df[text_column].astype(str).progress_apply(get_information_density)
     print("指标3：信息密度 -> 计算完成。")
     
@@ -118,7 +117,7 @@ try:
         if not df_hotels_effectiveness.empty:
             df_hotels_effectiveness.to_excel(writer, sheet_name='酒店评论有效性', index=False)
     
-    print(f"\n处理完成！评论有效性分析结果已成功保存至: {output_filename_3}")
+    print(f"\n评论有效性分析结果已成功保存至: {output_filename_3}")
 
 except Exception as e:
     print(f"\n保存文件时出错: {e}")

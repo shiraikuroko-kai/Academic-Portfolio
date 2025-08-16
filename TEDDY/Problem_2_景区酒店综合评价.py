@@ -111,7 +111,7 @@ try:
         if not df_hotels_final.empty:
             df_hotels_final.to_excel(writer, sheet_name='酒店综合评价', index=False)
     
-    print(f"\n处理完成！综合评价结果已成功保存至: {output_filename_2}")
+    print(f"\n综合评价结果已成功保存至: {output_filename_2}")
 
 except Exception as e:
-    print(f"\n保存文件时出错: {e}")
+    print(f"\n出错了，一定是镰池和马搞的鬼: {e}")
