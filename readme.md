@@ -44,6 +44,6 @@ My most ambitious and independent project so far.
 
 ---
 
-## ✅ Closing Note
+Thanksgiving
 These projects together demonstrate my ability to deliver practical IT solutions, my growth as a system-oriented thinker, and my readiness for the challenges of graduate study.  
 Thank you for taking the time to explore my work!
